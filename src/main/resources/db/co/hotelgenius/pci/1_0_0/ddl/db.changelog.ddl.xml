@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+	<changeSet id="create_credit_cards_table" author="t.sergouniotis">
+
+		<createTable tableName="credit_cards">
+			<column name="credit_card_id" type="BIGINT" />
+			<column name="credit_card_number" type="VARCHAR(256)">
+				<constraints nullable="false" />
+			</column>
+			<column name="cardholder_name" type="VARCHAR(256)">
+				<constraints nullable="false" />
+			</column>
+			<column name="service_code" type="VARCHAR(256)" />
+			<column name="cvv" type="VARCHAR(3)">
+				<constraints nullable="false" />
+			</column>
+			<column name="expiration_date" type="DATE">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addPrimaryKey tableName="credit_cards" columnNames="credit_card_id"
+			constraintName="credit_cards_pk" />
+
+		<createSequence sequenceName="credit_card_pk_sequence"
+			incrementBy="1" startValue="1" />
+
+	</changeSet>
+
+	<changeSet id="create_users_table" author="t.sergouniotis">
+
+		<createTable tableName="users">
+			<column name="user_id" type="BIGINT" />
+			<column name="first_name" type="VARCHAR(256)">
+				<constraints nullable="false" />
+			</column>
+			<column name="last_name" type="VARCHAR(256)">
+				<constraints nullable="false" />
+			</column>
+			<column name="email" type="VARCHAR(256)">
+				<constraints nullable="false" />
+			</column>
+			<column name="street" type="VARCHAR(256)" />
+			<column name="number" type="VARCHAR(256)" />
+			<column name="zip_code" type="VARCHAR(256)" />
+			<column name="username" type="VARCHAR(256)">
+				<constraints nullable="false" />
+			</column>
+			<column name="password" type="VARCHAR(256)">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_on" type="TIMESTAMP" defaultValueDate="CURRENT_TIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="updated_at" type="TIMESTAMP">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+
+		<addPrimaryKey tableName="users" columnNames="user_id"
+			constraintName="users_pk" />
+
+		<createSequence sequenceName="users_pk_sequence"
+			incrementBy="1" startValue="1" />
+
+		<createIndex tableName="users" indexName="user_name_index"
+			unique="true">
+			<column name="username"></column>
+		</createIndex>
+
+	</changeSet>
+
+	<changeSet id="create_users_roles_talbe" author="t.sergouniotis">
+
+		<createTable tableName="users_roles">
+			<column name="user_id" type="BIGINT" />
+			<column name="role" type="VARCHAR(256)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addForeignKeyConstraint constraintName="user_role_fk"
+			referencedTableName="users" baseColumnNames="user_id" baseTableName="users_roles"
+			referencedColumnNames="user_id" />
+
+	</changeSet>
+
+
+	<changeSet id="create_oauth_tables" author="t.sergouniotis">
+
+		<createTable tableName="oauth_client_details">
+			<column name="client_id" type="VARCHAR(256)">
+				<constraints nullable="false" />
+			</column>
+			<column name="resource_ids" type="VARCHAR(256)" />
+			<column name="client_secret" type="VARCHAR(256)" />
+			<column name="scope" type="VARCHAR(256)" />
+			<column name="authorized_grant_types" type="VARCHAR(256)" />
+			<column name="web_server_redirect_uri" type="VARCHAR(256)" />
+			<column name="authorities" type="VARCHAR(256)" />
+			<column name="access_token_validity" type="INTEGER" />
+			<column name="refresh_token_validity" type="INTEGER" />
+			<column name="additional_information" type="VARCHAR(4096)" />
+			<column name="autoapprove" type="VARCHAR(256)" />
+		</createTable>
+
+		<addPrimaryKey columnNames="client_id" tableName="oauth_client_details"
+			constraintName="oauth_client_details_pk" />
+
+	</changeSet>
+
+	<changeSet id="oauth_access_token_table" author="t.sergouniotis">
+
+		<createTable tableName="oauth_access_token">
+			<column name="authentication_id" type="VARCHAR(256)" />
+			<column name="token_id" type="VARCHAR(256)" />
+			<column name="token" type="BINARY" />
+			<column name="user_name" type="VARCHAR(256)" />
+			<column name="client_id" type="VARCHAR(256)" />
+			<column name="authentication" type="BINARY" />
+			<column name="refresh_token" type="VARCHAR(256)" />
+		</createTable>
+
+		<createTable tableName="oauth_refresh_token">
+			<column name="token_id" type="VARCHAR(256)" />
+			<column name="token" type="BINARY" />
+			<column name="authentication" type="BINARY" />
+		</createTable>
+
+		<createTable tableName="oauth_code">
+			<column name="code" type="VARCHAR(256)" />
+			<column name="authentication" type="BINARY" />
+		</createTable>
+
+
+		<addPrimaryKey columnNames="authentication_id"
+			tableName="oauth_access_token" constraintName="oauth_access_token_pk" />
+
+	</changeSet>
+
+
+
+</databaseChangeLog>
