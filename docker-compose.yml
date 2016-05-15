@@ -1,0 +1,32 @@
+version: '2'
+services:
+  postgres:
+    container_name: opap_db
+    image: postgres:9.4
+    ports:
+    - 5432:5432
+    environment:
+    - POSTGRES_USER=opap
+    - POSTGRES_PASSWORD=opap
+    volumes:
+    - /home/sergouniotis/projects/data/opap/pgdata:/var/lib/postgresql/data
+    networks:
+    - opap_net
+  pci:
+    container_name: joker
+    image: thanassis/joker
+    ports:
+    - 8080:8080
+    - 9000:9000
+    environment:
+    - OPAP_DB_HOST=postgres
+    - OPAP_DB_PORT=5432
+    depends_on:
+    - postgres
+    env_file:
+    - dev.env
+    networks:
+    - opap_net
+networks:
+  opap_net:
+    driver: bridge

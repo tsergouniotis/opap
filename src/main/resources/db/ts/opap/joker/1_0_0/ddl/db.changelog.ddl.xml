@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+	<changeSet id="create_draw_table" author="t.sergouniotis">
+
+		<createTable tableName="draws">
+			<column name="draw_number" type="BIGINT" />
+
+			<column name="number_1" type="SMALLINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="number_2" type="SMALLINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="number_3" type="SMALLINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="number_4" type="SMALLINT">
+				<constraints nullable="false" />
+			</column>
+			<column name="number_5" type="SMALLINT">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="joker" type="SMALLINT">
+				<constraints nullable="false" />
+			</column>
+
+			<column name="draw_date" type="DATE">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addPrimaryKey tableName="draws" columnNames="draw_number"
+			constraintName="draws_pk" />
+
+		<createIndex indexName="draw_numbers_idx" tableName="draws">
+			<column name="number_1" />
+			<column name="number_2" />
+			<column name="number_3" />
+			<column name="number_4" />
+			<column name="number_5" />
+		</createIndex>
+
+	</changeSet>
+
+
+	<changeSet id="create_number_frequencies" author="t.sergouniotis">
+
+		<createTable tableName="number_frequencies">
+			<column name="number" type="SMALLINT" />
+			<column name="frequency" type="BIGINT" />
+		</createTable>
+
+		<addPrimaryKey tableName="number_frequencies"
+			columnNames="number" constraintName="number_frequences_pk" />
+
+	</changeSet>
+
+	<changeSet id="create_joker_frequencies" author="t.sergouniotis">
+
+		<createTable tableName="joker_frequencies">
+			<column name="number" type="SMALLINT" />
+			<column name="frequency" type="BIGINT" />
+		</createTable>
+
+		<addPrimaryKey tableName="joker_frequencies"
+			columnNames="number" constraintName="joker_frequences_pk" />
+
+	</changeSet>
+
+</databaseChangeLog>
