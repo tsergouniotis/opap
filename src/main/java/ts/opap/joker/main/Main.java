@@ -1,9 +1,6 @@
 package ts.opap.joker.main;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
@@ -22,10 +19,6 @@ import ts.opap.joker.resources.OpapResource;
 
 public class Main {
 
-	private static final String DB_USER = "opap";
-	private static final String DB_PASSWORD = "opap";
-	private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/opap";
-
 	public static void main(String[] args) throws Exception {
 
 		Container container = new Container();
@@ -38,15 +31,15 @@ public class Main {
 			d.driverModuleName("org.postgresql");
 		}).dataSource("OpapDS", (ds) -> {
 			ds.driverName("postgresql");
-			ds.connectionUrl(JDBC_URL);
-			ds.userName(DB_USER);
-			ds.password(DB_PASSWORD);
+			ds.connectionUrl(DBUtils.url());
+			ds.userName(DBUtils.user());
+			ds.password(DBUtils.pass());
 		}));
 
 		// Prevent JPA Fraction from installing it's default datasource fraction
 		container.fraction(new JPAFraction().inhibitDefaultDatasource().defaultDatasource("jboss/datasources/OpapDS"));
 
-//		container.fraction(TransactionsFraction.createDefaultFraction());
+		// container.fraction(TransactionsFraction.createDefaultFraction());
 
 		// perform liquibase migration
 		migrate();
@@ -67,8 +60,7 @@ public class Main {
 	}
 
 	private static void migrate() throws Exception {
-		try (Connection c = getConnection()) {
-
+		try (Connection c = DBUtils.getConnection()) {
 			Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(c));
 			Liquibase liquibase = new Liquibase("db/ts/opap/joker/db.changelog-master.xml",
 					new ClassLoaderResourceAccessor(), database);
@@ -77,14 +69,6 @@ public class Main {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static Connection getConnection() throws SQLException {
-		Properties props = new Properties();
-		props.setProperty("user", DB_USER);
-		props.setProperty("password", DB_PASSWORD);
-		// props.setProperty("ssl","true");
-		return DriverManager.getConnection(JDBC_URL, props);
 	}
 
 }

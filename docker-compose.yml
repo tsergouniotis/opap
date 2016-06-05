@@ -9,10 +9,10 @@ services:
     - POSTGRES_USER=opap
     - POSTGRES_PASSWORD=opap
     volumes:
-    - /home/sergouniotis/projects/data/opap/pgdata:/var/lib/postgresql/data
+    - ${HOME}/projects/data/opap/pgdata:/var/lib/postgresql/data
     networks:
     - opap_net
-  pci:
+  joker:
     container_name: joker
     image: thanassis/joker
     ports:
